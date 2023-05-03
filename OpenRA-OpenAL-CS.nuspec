@@ -7,13 +7,16 @@
     <owners>OpenRA</owners>
     <projectUrl>https://github.com/OpenRA/OpenAL-CS</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>OpenAL-CS modified for OpenRA</description>
+    <description>
+    This is a version of OpenAL-CS modified and packaged for OpenRA.
+    The package includes the C# wrapper (OpenAL-CS) and the native binaries for OpenAL-Soft and targets version 1.20.1 of the native project.
+    </description>
     <copyright>
     - Copyright (c) 2014-2015 Ethan Lee
     - Copyright (c) Creative Labs
     </copyright>
     <license type="expression">LGPL-2.0-only AND Zlib</license>
-    <tags>OpenRA</tags>
+    <tags>OpenRA natives OpenAL</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.0" />
     </dependencies>

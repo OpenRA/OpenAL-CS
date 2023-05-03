@@ -1,7 +1,7 @@
-name: Build native dependencies
+name: Build native dependencies (OpenAL-Soft)
 
 env:
-    OPENALSOFT_VERSION: 1.20.1
+    OPENALSOFT_VERSION: 1.20.1 # Make sure this matches the version mentioned in the description in the .nuspec file.
 
 on:
     workflow_call:
@@ -20,6 +20,7 @@ jobs:
                 mkdir -p artifacts/x86
                 mkdir artifacts/x64
 
+            # Download an official precompiled release version of OpenAL-Soft because compiling for Windows on Linux is hard.
             - name: Download natives
               run: |
                 curl -s -L -O https://openal-soft.org/openal-binaries/openal-soft-${OPENALSOFT_VERSION}-bin.zip
@@ -48,8 +49,8 @@ jobs:
                 cd openal-soft-${OPENALSOFT_VERSION}
                 cmake -B build -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 -DALSOFT_EXAMPLES=OFF -DALSOFT_UTILS=OFF -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11
                 cmake --build build
-                lipo -thin arm64 build/libopenal.${OPENALSOFT_VERSION}.dylib -output ../artifacts/arm64/soft_oal.dylib
                 lipo -thin x86_64 build/libopenal.${OPENALSOFT_VERSION}.dylib -output ../artifacts/x86_64/soft_oal.dylib
+                lipo -thin arm64 build/libopenal.${OPENALSOFT_VERSION}.dylib -output ../artifacts/arm64/soft_oal.dylib
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v3
@@ -57,6 +58,8 @@ jobs:
                 name: Natives-MacOS
                 path: ./artifacts
 
+    # Note: Running inside a CentOS container because we want to compile using a version of glibc
+    # that is as old as reasonably possible to ensure backwards compatibility of the compiled binaries.
     linux-x64:
         name: Linux (x64)
         runs-on: ubuntu-22.04
@@ -64,10 +67,9 @@ jobs:
         steps:
             - name: Setup Dependencies
               run: |
-                chown -R $(id -u):$(id -g) $PWD
-                yum -y install https://repo.ius.io/ius-release-el7.rpm centos-release-scl scl-utils
-                yum -y install devtoolset-8 cmake3 bzip2 patch
                 mkdir -p artifacts/x64
+                yum -y install https://repo.ius.io/ius-release-el7.rpm centos-release-scl scl-utils
+                yum -y install devtoolset-8 cmake3 bzip2
 
             - name: Compile natives
               run: |
@@ -85,25 +87,28 @@ jobs:
                 name: Natives-Linux(x64)
                 path: ./artifacts
 
+    # Note: Using the run-on-arch action is *very* slow, but is the only way to simulate arm64 architecture.
     linux-arm64:
-        runs-on: ubuntu-22.04
         name: Linux (arm64)
+        runs-on: ubuntu-22.04
         steps:
             - name: Setup dependencies and compile natives
               uses: uraimo/run-on-arch-action@v2
               with:
                 arch: aarch64
-                distro: ubuntu20.04
+                distro: ubuntu22.04
                 shell: /bin/sh
+                githubToken: ${{ github.token }}
                 setup: |
                   mkdir -p "${PWD}/artifacts/arm64"
                 dockerRunArgs: |
                   --volume "${PWD}/artifacts:/artifacts"
                 env: |
                   OPENALSOFT_VERSION: ${{ env.OPENALSOFT_VERSION }}
-                run: |
+                install: |
                   apt-get update -q -y
                   apt-get install -y build-essential curl cmake libasound2-dev portaudio19-dev libpulse-dev
+                run: |
                   curl -s -L -O https://openal-soft.org/openal-releases/openal-soft-${OPENALSOFT_VERSION}.tar.bz2
                   tar xf openal-soft-${OPENALSOFT_VERSION}.tar.bz2
                   cd openal-soft-${OPENALSOFT_VERSION}/build
