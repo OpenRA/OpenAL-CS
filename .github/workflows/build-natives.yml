@@ -1,7 +1,7 @@
 name: Build native dependencies (OpenAL-Soft)
 
 env:
-    OPENALSOFT_VERSION: 1.20.1 # Make sure this matches the version mentioned in the description in the .nuspec file.
+    OPENALSOFT_VERSION: 1.23.1 # Make sure this matches the version mentioned in the description in the .nuspec file.
 
 on:
     pull_request:
