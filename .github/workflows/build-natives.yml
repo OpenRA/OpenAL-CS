@@ -88,35 +88,23 @@ jobs:
               with:
                 name: Natives-Linux(x64)
                 path: ./artifacts
-
-    # Note: Using the run-on-arch action is *very* slow, but is the only way to simulate arm64 architecture.
     linux-arm64:
         name: Linux (arm64)
-        runs-on: ubuntu-22.04
+        runs-on: self-hosted
         steps:
-            - name: Setup dependencies and compile natives
-              uses: uraimo/run-on-arch-action@v2
-              with:
-                arch: aarch64
-                distro: ubuntu22.04
-                shell: /bin/sh
-                githubToken: ${{ github.token }}
-                setup: |
-                  mkdir -p "${PWD}/artifacts/arm64"
-                dockerRunArgs: |
-                  --volume "${PWD}/artifacts:/artifacts"
-                env: |
-                  OPENALSOFT_VERSION: ${{ env.OPENALSOFT_VERSION }}
-                install: |
-                  apt-get update -q -y
-                  apt-get install -y build-essential curl cmake libasound2-dev portaudio19-dev libpulse-dev
-                run: |
-                  curl -s -L -O https://openal-soft.org/openal-releases/openal-soft-${OPENALSOFT_VERSION}.tar.bz2
-                  tar xf openal-soft-${OPENALSOFT_VERSION}.tar.bz2
-                  cd openal-soft-${OPENALSOFT_VERSION}/build
-                  cmake .. -DBUILD_SHARED_LIBS=true -DCMAKE_BUILD_TYPE=Release
-                  cmake --build .
-                  cp libopenal.so /artifacts/arm64/soft_oal.so
+            - name: Clean workspace
+              run: |
+                rm -rf ${{ github.workspace }}/*
+
+            - name: Compile natives
+              run: |
+                curl -s -L -O https://openal-soft.org/openal-releases/openal-soft-${OPENALSOFT_VERSION}.tar.bz2
+                tar xf openal-soft-${OPENALSOFT_VERSION}.tar.bz2
+                cd openal-soft-${OPENALSOFT_VERSION}/build
+                cmake .. -DBUILD_SHARED_LIBS=true -DCMAKE_BUILD_TYPE=Release
+                cmake --build . -- -j$(nproc)
+                mkdir -p ../../artifacts/arm64/
+                cp libopenal.so ../../artifacts/arm64/soft_oal.so
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v3
