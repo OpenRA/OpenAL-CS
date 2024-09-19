@@ -64,12 +64,11 @@ jobs:
     linux-x64:
         name: Linux (x64)
         runs-on: ubuntu-22.04
-        container: centos:centos7
+        container: rockylinux:8
         steps:
             - name: Setup Dependencies
               run: |
                 mkdir -p artifacts/x64
-                yum -y install https://repo.ius.io/ius-release-el7.rpm centos-release-scl scl-utils
                 yum -y install devtoolset-8 cmake3 bzip2
                 yum -y install alsa-lib-devel portaudio-devel pulseaudio-libs-devel libsoundio-devel
 
