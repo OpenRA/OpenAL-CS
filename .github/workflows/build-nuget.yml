@@ -33,7 +33,7 @@ jobs:
         needs: [compile-openal, compile-natives]
         steps:
             - name: Clone repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Prepare environment variables
               run: |
@@ -46,31 +46,31 @@ jobs:
                 fi
 
             - name: Download artifacts - OpenAL-CS.dll
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: OpenAL-CS
                 path: ./bin
 
             - name: Download artifacts - native - Windows
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: Natives-Windows
                 path: ./native/win
 
             - name: Download artifacts - native - MacOS
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: Natives-MacOS
                 path: ./native/osx
 
             - name: Download artifacts - native - Linux (x64)
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: Natives-Linux(x64)
                 path: ./native/linux
 
             - name: Download artifacts - native - Linux (arm64)
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: Natives-Linux(arm64)
                 path: ./native/linux
@@ -83,7 +83,7 @@ jobs:
                 nuget pack OpenRA-OpenAL-CS.nuspec -OutputDirectory ./nuget -version ${{ env.PACKAGE_VERSION }}
 
             - name: Upload NuGet package to Artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: NuGet Package ${{ env.PACKAGE_VERSION }}
                 path: ./nuget

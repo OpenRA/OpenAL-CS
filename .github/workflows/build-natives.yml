@@ -29,7 +29,7 @@ jobs:
                 unzip -j -d artifacts/x64 openal-soft-${OPENALSOFT_VERSION}-bin.zip openal-soft-${OPENALSOFT_VERSION}-bin/bin/Win64/soft_oal.dll
 
             - name: Upload Artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: Natives-Windows
                 path: ./artifacts
@@ -54,7 +54,7 @@ jobs:
                 lipo -thin arm64 build/libopenal.${OPENALSOFT_VERSION}.dylib -output ../artifacts/arm64/soft_oal.dylib
 
             - name: Upload Artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: Natives-MacOS
                 path: ./artifacts
@@ -84,7 +84,7 @@ jobs:
                 cp libopenal.so ../../artifacts/x64/soft_oal.so
 
             - name: Upload Artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: Natives-Linux(x64)
                 path: ./artifacts
@@ -119,7 +119,7 @@ jobs:
                   cp libopenal.so /artifacts/arm64/soft_oal.so
 
             - name: Upload Artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: Natives-Linux(arm64)
                 path: ./artifacts
