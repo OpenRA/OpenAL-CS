@@ -71,7 +71,7 @@ jobs:
                 mkdir -p artifacts/x64
                 dnf -y install epel-release
                 yum -y install gcc-c++ gcc cmake bzip2
-                yum -y install alsa-lib-devel portaudio-devel pulseaudio-libs-devel
+                yum -y install alsa-lib-devel portaudio-devel pulseaudio-libs-devel pipewire-devel
 
             - name: Compile natives
               run: |
@@ -95,7 +95,7 @@ jobs:
             - name: Setup Dependencies
               run: |
                 mkdir -p artifacts/arm64
-                sudo apt-get install -y build-essential curl cmake libasound2-dev portaudio19-dev libpulse-dev
+                sudo apt-get install -y build-essential curl cmake libasound2-dev portaudio19-dev libpulse-dev libpipewire-0.3-dev
             - name: Compile Natives
               run: |
                 curl -s -L -O https://openal-soft.org/openal-releases/openal-soft-${OPENALSOFT_VERSION}.tar.bz2
