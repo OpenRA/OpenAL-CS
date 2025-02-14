@@ -59,28 +59,27 @@ jobs:
                 name: Natives-MacOS
                 path: ./artifacts
 
-    # Note: Running inside a CentOS container because we want to compile using a version of glibc
+    # Note: Running inside a Rocky Linux container because we want to compile using a version of glibc
     # that is as old as reasonably possible to ensure backwards compatibility of the compiled binaries.
     linux-x64:
         name: Linux (x64)
         runs-on: ubuntu-22.04
-        container: centos:centos7
+        container: rockylinux:8
         steps:
             - name: Setup Dependencies
               run: |
                 mkdir -p artifacts/x64
-                yum -y install https://repo.ius.io/ius-release-el7.rpm centos-release-scl scl-utils
-                yum -y install devtoolset-8 cmake3 bzip2
-                yum -y install alsa-lib-devel portaudio-devel pulseaudio-libs-devel libsoundio-devel
+                dnf -y install epel-release
+                yum -y install gcc-c++ gcc cmake bzip2
+                yum -y install alsa-lib-devel portaudio-devel pulseaudio-libs-devel
 
             - name: Compile natives
               run: |
-                source /opt/rh/devtoolset-8/enable
                 curl -s -L -O https://openal-soft.org/openal-releases/openal-soft-${OPENALSOFT_VERSION}.tar.bz2
                 tar xf openal-soft-${OPENALSOFT_VERSION}.tar.bz2
                 cd openal-soft-${OPENALSOFT_VERSION}/build
-                cmake3 .. -DBUILD_SHARED_LIBS=true -DCMAKE_BUILD_TYPE=Release
-                cmake3 --build .
+                cmake .. -DBUILD_SHARED_LIBS=true -DCMAKE_BUILD_TYPE=Release
+                cmake --build .
                 cp libopenal.so ../../artifacts/x64/soft_oal.so
 
             - name: Upload Artifacts
