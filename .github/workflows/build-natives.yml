@@ -14,19 +14,40 @@ permissions:
 jobs:
     windows:
         name: Windows (x86 + x64)
-        runs-on: ubuntu-22.04
+        runs-on: windows-2022
         steps:
             - name: Setup Dependencies
+              shell: pwsh
               run: |
-                mkdir -p artifacts/x86
-                mkdir artifacts/x64
+                New-Item -ItemType Directory -Force artifacts/x86 | Out-Null
+                New-Item -ItemType Directory -Force artifacts/x64 | Out-Null
 
-            # Download an official precompiled release version of OpenAL-Soft because compiling for Windows on Linux is hard.
-            - name: Download natives
+            - name: Download sources
+              shell: pwsh
               run: |
-                curl -s -L -O https://openal-soft.org/openal-binaries/openal-soft-${OPENALSOFT_VERSION}-bin.zip
-                unzip -j -d artifacts/x86 openal-soft-${OPENALSOFT_VERSION}-bin.zip openal-soft-${OPENALSOFT_VERSION}-bin/bin/Win32/soft_oal.dll
-                unzip -j -d artifacts/x64 openal-soft-${OPENALSOFT_VERSION}-bin.zip openal-soft-${OPENALSOFT_VERSION}-bin/bin/Win64/soft_oal.dll
+                $version = ${env:OPENALSOFT_VERSION}
+                $archive = "openal-soft-$version.tar.bz2"
+                $url = "https://openal-soft.org/openal-releases/$archive"
+
+                Invoke-WebRequest -Uri $url -OutFile $archive
+
+                $sevenZip = "${env:ProgramFiles}\7-Zip\7z.exe"
+                & $sevenZip x $archive -y
+                & $sevenZip x "openal-soft-$version.tar" -y
+
+            - name: Build x86
+              shell: pwsh
+              run: |
+                cmake -S "openal-soft-${env:OPENALSOFT_VERSION}" -B build-win32 -A Win32 -DALSOFT_EXAMPLES=OFF -DALSOFT_UTILS=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
+                cmake --build build-win32 --config Release
+                Copy-Item "build-win32\Release\OpenAL32.dll" "artifacts\x86\soft_oal.dll"
+
+            - name: Build x64
+              shell: pwsh
+              run: |
+                cmake -S "openal-soft-${env:OPENALSOFT_VERSION}" -B build-x64 -A x64 -DALSOFT_EXAMPLES=OFF -DALSOFT_UTILS=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
+                cmake --build build-x64 --config Release
+                Copy-Item "build-x64\Release\OpenAL32.dll" "artifacts\x64\soft_oal.dll"
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
