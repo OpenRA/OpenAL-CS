@@ -36,7 +36,7 @@ jobs:
 
     macos:
         name: macOS (x64 + arm64)
-        runs-on: macos-13
+        runs-on: macos-14
         steps:
             - name: Setup Dependencies
               run: |
@@ -48,7 +48,7 @@ jobs:
                 curl -s -L -O https://openal-soft.org/openal-releases/openal-soft-${OPENALSOFT_VERSION}.tar.bz2
                 tar xf openal-soft-${OPENALSOFT_VERSION}.tar.bz2
                 cd openal-soft-${OPENALSOFT_VERSION}
-                cmake -B build -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 -DALSOFT_EXAMPLES=OFF -DALSOFT_UTILS=OFF -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11
+                cmake -B build -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 -DALSOFT_EXAMPLES=OFF -DALSOFT_UTILS=OFF -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                 cmake --build build
                 lipo -thin x86_64 build/libopenal.${OPENALSOFT_VERSION}.dylib -output ../artifacts/x86_64/soft_oal.dylib
                 lipo -thin arm64 build/libopenal.${OPENALSOFT_VERSION}.dylib -output ../artifacts/arm64/soft_oal.dylib
