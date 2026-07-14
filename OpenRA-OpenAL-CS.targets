@@ -11,6 +11,11 @@
       <Link>soft_oal.dll</Link>
       <Visible>false</Visible>
     </Content>
+    <Content Include="$(MSBuildThisFileDirectory)\..\native\win-arm64\soft_oal.dll" Condition="'$(TargetPlatform)' == 'win-arm64'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>soft_oal.dll</Link>
+      <Visible>false</Visible>
+    </Content>
     <Content Include="$(MSBuildThisFileDirectory)\..\native\linux-x64\soft_oal.so" Condition="'$(TargetPlatform)' == 'linux-x64'">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>soft_oal.so</Link>
@@ -31,7 +36,7 @@
       <Link>soft_oal.dylib</Link>
       <Visible>false</Visible>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\lib\netstandard2.0\OpenAL-CS.dll.config" Condition="'$(TargetPlatform)' != 'win-x64' And '$(TargetPlatform)' != 'win-x86'">
+    <Content Include="$(MSBuildThisFileDirectory)\..\lib\netstandard2.0\OpenAL-CS.dll.config" Condition="'$(TargetPlatform)' != 'win-x64' And '$(TargetPlatform)' != 'win-x86' And '$(TargetPlatform)' != 'win-arm64'">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>OpenAL-CS.dll.config</Link>
       <Visible>false</Visible>

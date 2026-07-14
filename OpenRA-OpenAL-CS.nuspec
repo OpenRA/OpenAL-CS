@@ -28,6 +28,7 @@
     <file src="bin/netstandard2.0/OpenAL-CS.*" target="lib/netstandard2.0" />
     <file src="native/win/x86/soft_oal.dll" target="native/win-x86" />
     <file src="native/win/x64/soft_oal.dll" target="native/win-x64" />
+    <file src="native/win/arm64/soft_oal.dll" target="native/win-arm64" />
     <file src="native/linux/x64/soft_oal.so" target="native/linux-x64" />
     <file src="native/linux/arm64/soft_oal.so" target="native/linux-arm64" />
     <file src="native/osx/x86_64/soft_oal.dylib" target="native/osx-x64" />
