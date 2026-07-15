@@ -13,13 +13,12 @@ permissions:
 
 jobs:
     windows:
-        name: Windows (x86 + x64)
+        name: Windows (x64)
         runs-on: windows-2022
         steps:
             - name: Setup Dependencies
               shell: pwsh
               run: |
-                New-Item -ItemType Directory -Force artifacts/x86 | Out-Null
                 New-Item -ItemType Directory -Force artifacts/x64 | Out-Null
 
             - name: Download sources
@@ -34,13 +33,6 @@ jobs:
                 $sevenZip = "${env:ProgramFiles}\7-Zip\7z.exe"
                 & $sevenZip x $archive -y
                 & $sevenZip x "openal-soft-$version.tar" -y
-
-            - name: Build x86
-              shell: pwsh
-              run: |
-                cmake -S "openal-soft-${env:OPENALSOFT_VERSION}" -B build-win32 -A Win32 -DALSOFT_EXAMPLES=OFF -DALSOFT_UTILS=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
-                cmake --build build-win32 --config Release
-                Copy-Item "build-win32\Release\OpenAL32.dll" "artifacts\x86\soft_oal.dll"
 
             - name: Build x64
               shell: pwsh
