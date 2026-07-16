@@ -31,10 +31,5 @@
       <Link>soft_oal.dylib</Link>
       <Visible>false</Visible>
     </Content>
-    <Content Include="$(MSBuildThisFileDirectory)\..\lib\netstandard2.0\OpenAL-CS.dll.config" Condition="'$(TargetPlatform)' != 'win-x64' And '$(TargetPlatform)' != 'win-arm64'">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>OpenAL-CS.dll.config</Link>
-      <Visible>false</Visible>
-    </Content>
   </ItemGroup>
 </Project>
